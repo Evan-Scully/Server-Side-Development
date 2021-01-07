@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+</head>
+<body>
+	<form method="post" action="RegisterController">
+		<label>Email:</label>
+		<input type="email" name="email"/><br>
+        <label>Address:</label>
+		<input type="address" name="address"/><br>
+		<label>Password:</label>
+		<input type="password" name="password"/><br>
+		<input TYPE="submit" value="submit"/>
+	</form>
+</body>
+</html>
+
+<!--
+    action - This defines where the data from the form should be sent to when the button is clicked. It can 
+    be sent to various things from a php file to a java servlet.
+
+    method - defines how the form sends the data, whether it is in a GET or POST method to send in the http 
+    request. Using GET puts the parameters in the URL while POST does not so it should be used for passwords
+-->
+
+<!--
+    Get - Get should be used when passing non sensitive data because it is faster and cacheable. The data is 
+    sent in the URL and it can be bookmarked so that the user can save that exact data. It is also less safe 
+    because of this. Get has a data length cap so its more suitable to small pieces of information
+
+    Post - Post is the more secure way of sending data, the data does not appear in the URL, should be used when 
+    passing sensitive data. While Get has a max data length Post does not so it can used to send large amounts of 
+    data. Post cannot be bookmarked or cached which also makes it  more sequre than Get.
+-->
+
+<!-- 
+    POST - submits the current item / resource to the destination replacing the target. Updating a row in a database.
+    or changing a file on the other end.
+    DELETE - this deletes the item on the other-end be it a file or a row in a database.
+-->
+
+protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+	String name = request.getParameter("name");
+	String address = request.getParameter("address");
+		
+	request.setAttribute("name", name);	
+    request.setAttribute("address", address);	
+
+    System.out.println("Hello " + name + " from " + address);		
+			
+	request.getRequestDispatcher("Loans.jsp").forward(request, response);
+}
+
+protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+	String name = request.getParameter("name");
+	String address = request.getParameter("address");
+		
+    User u = new User(name,address);
+
+	request.setAttribute("user", u);			
+			
+	request.getRequestDispatcher("show.jsp").forward(request, response);
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+</head>
+<body>
+    Hello <c:out value="${user.name}"/> from <c:out value="${user.address}"/>
+</body>
+</html>
+
+<!--
+    doGet,doPost
+-->
+
+<!--
+    example/person/name
+
+    First the servlet will try to find an exact match on the servlet based on all charachter in the
+    URL. It will choose the longest match eg. example/person/name over example/name/
+
+    If a file extension is provided the servlet will attempt to file the corresponding file and 
+    redirect the user there.
+
+    url mapping is defined in the web.xml file in java. This defines the root, servlet name and
+    servlet class.
+    
+    If the servlet can not match to any mapping it will resort to a default if it is set or
+    fail.
+-->
+
+<!-- 
+    Hidden data fields are generally used to pass data to the controller that 
+    should not be changeable and needed to identify the database row or customer
+    object that needs to be updated or changed. They can be passed from form to form 
+    without the customer being able to see it.
+-->
+
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+</head>
+<body>
+	<form method="post" action="Package.jsp">
+
+		<label>Name:</label>
+		<input type="text" name="name"/><br>
+        <label>Address:</label>
+		<input type="text" name="address"/><br>
+
+		<input TYPE="submit" value="submit"/>
+	</form>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+</head>
+<body>
+	<form method="post" action="Show.jsp">
+
+        <input type="hidden" name="name" value={"param.name"}>
+        <input type="hidden" name="address" value={"param.address"}>
+
+		<label>Package No.:</label>
+		<input type="text" name="packageNo"/><br>
+        <label>Email:</label>
+		<input type="email" name="email"/><br>
+
+		<input TYPE="submit" value="submit"/>
+	</form>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Package</title>
+</head>
+<body>
+	Name: <c:out value="${param.name}"/>
+    Address: <c:out value="${param.address}"/>
+    Package Number: <c:out value="${param.packageNo}"/>
+    Email: <c:out value="${param.email}"/>	
+</body>
+</html>
+
+<!--
+    HTTPsession - this is used to store data in a session. This data then persists from one 
+    page to the next and can be accessed anywhere. They have an expiry time unlike cookies so that
+    the data get deleted after the alloted time. Its useful to check whether a user is still signed in 
+    and doesnt need to re enter login details
+
+    Cookie - It is essentially a text value passed in http responses. It is stored like a name value pair 
+    like in json. It will persist until it is set to expire just like a session. They are stored in the 
+    web browser, make using hidden input fields pointless because the information can just be stored in a 
+    cookie.
+
+    <%
+    String name = request.getParameter("name"); 
+    session.setAttribute("name",name); 
+
+    <c:set var="name" value="${name}" scope="session"/>
+    <c:set var="address" value="${address}" scope="session"/>
+
+    String address = request.getParameter("address"); 
+    session.setAttribute("address",address); #
+
+    String name = (String) session.getAttribute("name"); 
+    String address = (String) session.getAttribute("address"); 
+    %>
+-->
+
+<!--
+Application scope - used to store variables that will be needed across all pages of the application.
+Page scope - This is the scope of the current page only, used to store variables needed only on this page.
+Request scope - Only lasts as long as the current request.
+Session scope - Stores variables needed only in this session.
+-->
